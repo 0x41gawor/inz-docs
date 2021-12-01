@@ -1,5 +1,3 @@
-# Stage 3 Installation Guide
-
 Document follows [this guide](https://www.free5gc.org/installations/stage-3-vm-basics/) with every step listed below included.
 
 - [Creating a Ubuntu VM using VirtualBox](https://www.free5gc.org/installations/stage-3-vm-basics/)
@@ -9,6 +7,8 @@ Document follows [this guide](https://www.free5gc.org/installations/stage-3-vm-b
 - [free5GC Simple Apps](https://www.free5gc.org/installations/stage-3-free5gc-app/)
 - [free5GC Demo Videos](https://www.free5gc.org/stage-3-videos/video-index/)
 - [Environment setup of multiple SMF, DNN, and UPF (including ULCL)](https://www.youtube.com/watch?v=AEMrjKRWarw)
+
+# Step 1 - Create Ubuntu Server VM
 
 ## 1 Install Virtual Box
 
@@ -158,5 +158,167 @@ You can close the Virtual Box window.
 4. Type in   `ssh <host_only_network_IP_adrress_of_ubuntu_server> -l <username_on_ubuntu_server>`
    1. e.g `ssh 192.168.56.101 -l ejek`
 
+# Step 2 - Clone VM and setup network
 
+## 1 Check up an existing VM for Cloning
+
+Launch VirtualBox, and make sure the Ubuntu VM (ubuntu) we created before can boot up, then:
+
+- Log in into the VM using SSH from the host machine, and check if the VM has internet access
+  - `ssh 192.168.56.101 -l ejek`
+  - `ping google.com`
+
+- Make sure you have done `sudo apt update` and `sudo apt upgrade` (or you can do it again)
+- Shutdown the VM
+  - `sudo shutdown -P now`
+
+VM is ready to clone!
+
+## 2 Clone the VM
+
+- From the virtual box select ubuntu-server VM, and from "snapshots" options select "clone".
+
+![](img/stage-3/18.png)
+
+- Name it "free5gc" and select correct MAC Address Policy
+
+  ![](img/stage-3/19.png)
+
+- In the next window its your choice, both (linked and full) options will do.
+
+- After the new VM is created
+  - Start up the new free5gc VM, and use the same username and password to log in
+  - In the Ubuntu terminal run `ping google.com` to make sure it has internet access, and `ifconfig` to note IP address of the Host-only network interface
+    - for example the IP could still be `192.168.56.101`, and interface name is `enp0s8`
+  - Log in into free5gc VM using SSH, and run the same commands again, to check it SSH work properly
+
+## 3 Change hostname
+
+VM still has host name that you gave to the original one (or ubuntu if you left it default). Let's rename it to `free5gc`.
+
+```bash
+sudo nano /etc/hostname 
+```
+
+In the file, change `<previous_name>` into `free5gc`。If you are using `nano` ，you can press Ctrl-O to save the file, then Ctrl-X to exit.
+
+Check if changes are saved.
+
+```bash
+cat /etc/hostname
+```
+
+Let's also change the file `/etc/hosts/` by replacing  `<previous_name>` with `free5gc`.
+
+```bash
+sudo nano /etc/hosts
+```
+
+Content of `/etc/hosts/` should look like this:
+
+![](img/stage-3/20.png)
+
+The changes will take effect after next reboot.
+
+```bash
+sudo shutdown -r now
+```
+
+## 4 Setting Static IP Address
+
+The Host-only network interface, by default, gets its IP address through DHCP. The cloned free5gc VM seems to have trouble obtaining new IP address. We can change the host-only interface to use static IP address instead, which can save a lot of trouble later. So we will fix the static IP address as `192.168.56.101`.
+
+```bash
+cd /etc/netplan
+ls
+```
+
+The only file that will be shown is `00-installer-config.yaml`
+
+Let's display its content:
+
+![](img/stage-3/21.png)
+
+It means the VM has two interfaces:
+
+- enp0s3
+- enp0s8
+  - which we know is the Host-only network Interface
+
+To fix a static IP to the interface, we need to disable dhcp protocol and add `addresses` attribute with value `[<ip_address_1>, <ip_address_2>, ...]`
+
+Use nano:
+
+```bash
+sudo nano 00-installer-config.yaml
+```
+
+and change it to:
+
+```yaml
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    enp0s3:
+      dhcp4: true
+    enp0s8:
+      dhcp4: no
+      addresses: [192.168.56.101/24]
+  version: 2
+```
+
+Verify:
+
+![](img/stage-3/22.png)
+
+Now check if the new configuration is correct syntax:
+
+```bash
+sudo netplan try
+```
+
+
+
+![](img/stage-3/23.png)
+
+Press Enter to exit and apply the new interface settings
+
+```bash
+sudo netplan apply
+```
+
+Run `ifconfig` to see if the network setting has been changed correctly:
+
+We can also check the routing table, just to have a grasp of what is going on regarding the network setting:
+
+```bash
+route -n
+```
+
+![](img/stage-3/24.png)
+
+As we remember the VM has to adapters which we can check in VirtualBox under VM network settings.
+
+![](img/stage-3/25.png)
+
+- Now the NAT network adapter enp0s3 has IP `10.0.2.2` and it belongs to NAT network `10.0.2.0/24`.
+
+- The host-only adapter enp0s8 has IP `192.168.56.0`
+
+From the display above, we learn that the Host-only network `192.168.56.0/24` does not have internet access by itself (even though we can access it using SSH from the host machine). Internet access is through the NAT network `10.0.2.0/24`, with the gateway being `10.0.2.2` (provided by VirtualBox).
+
+## Step 3 How to run it the next time
+
+1. Launch Oracle VM VirtualBox Manager
+
+2. Select "free5gc" VM and start it.
+
+3. Launch SSH Client (e.g. MobaXterm)
+
+4. Type in:
+
+   ```bash
+   ssh 192.168.56.101 -l ejek
+   ```
+This is  how we interact with free5gc VM from now on.
 
