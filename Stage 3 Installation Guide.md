@@ -14,7 +14,7 @@ Document follows [this guide](https://www.free5gc.org/installations/stage-3-vm-b
 
 ## 2 Download Ubuntu Server
 
-Use this link
+Use this https://ubuntu.com/download/server
 
 ![](img/stage-3/1.png)
 
@@ -78,7 +78,10 @@ Installation is a long process I will list only the key-points. Unsaid things le
 
 ![](img/stage-3/12.png)
 
-- Later follow the displayed instructions.
+- Later follow the displayed instructions and leave default values.
+- Reboot at the end.
+- Here you have nothing to worry about. Just press enter
+- <img src="img/stage-3/12-1.png" style="zoom:75%;" />
 
 ### 3.4 Test your ubuntu-server installation
 
@@ -92,7 +95,7 @@ After you've logged in type in some commands:
 
 Of course addresses on your machine may differ.
 
-Your display may look different, but take notes about the IP address of the *Host-only* interface card. The example above shows `192.168.56.101`. You can SSH from your host machine into this Ubuntu VM using the IP later. (Another IP address, `10.0.2.15` is the IP address of the NAT interface card, the apps in your host machine cannot access it).
+Your display may look different, but take notes about the IP address of the *Host-only* interface card. The example above shows `192.168.56.101`. You can SSH from your host machine into this Ubuntu VM using theis IP address later. (Another IP address, `10.0.2.15` is the IP address of the NAT interface card, the apps in your host machine cannot access it).
 
 ## 4 Connect to the Ubuntu-server VM via SSH
 
@@ -162,6 +165,8 @@ You can close the Virtual Box window.
 
 ## 1 Check up an existing VM for Cloning
 
+Shutdown the machine if it is running.
+
 Launch VirtualBox, and make sure the Ubuntu VM (ubuntu) we created before can boot up, then:
 
 - Log in into the VM using SSH from the host machine, and check if the VM has internet access
@@ -200,7 +205,7 @@ VM still has host name that you gave to the original one (or ubuntu if you left 
 sudo nano /etc/hostname 
 ```
 
-In the file, change `<previous_name>` into `free5gc`。If you are using `nano` ，you can press Ctrl-O to save the file, then Ctrl-X to exit.
+In the file, change `<previous_name>` into `free5gc`。If you are using `nano` ，you can press `Ctrl-O` to save the file, `Enter` to confirm name, and then `Ctrl-X` to exit.
 
 Check if changes are saved.
 
@@ -226,6 +231,8 @@ sudo shutdown -r now
 
 ## 4 Setting Static IP Address
 
+Connect to the machine again.
+
 The Host-only network interface, by default, gets its IP address through DHCP. The cloned free5gc VM seems to have trouble obtaining new IP address. We can change the host-only interface to use static IP address instead, which can save a lot of trouble later. So we will fix the static IP address as `192.168.56.101`.
 
 ```bash
@@ -236,6 +243,12 @@ ls
 The only file that will be shown is `00-installer-config.yaml`
 
 Let's display its content:
+
+```bash
+cat 00-installer-config.yaml
+```
+
+> **Hint**: You can use tab to autocomplete such long names as this one.
 
 ![](img/stage-3/21.png)
 
@@ -281,7 +294,7 @@ sudo netplan try
 
 ![](img/stage-3/23.png)
 
-Press Enter to exit and apply the new interface settings
+Press Enter to exit and then apply the new interface settings
 
 ```bash
 sudo netplan apply
@@ -307,7 +320,7 @@ As we remember the VM has to adapters which we can check in VirtualBox under VM 
 
 From the display above, we learn that the Host-only network `192.168.56.0/24` does not have internet access by itself (even though we can access it using SSH from the host machine). Internet access is through the NAT network `10.0.2.0/24`, with the gateway being `10.0.2.2` (provided by VirtualBox).
 
-## Step 3 How to run it the next time
+## 5 How to run it the next time
 
 1. Launch Oracle VM VirtualBox Manager
 
@@ -321,4 +334,265 @@ From the display above, we learn that the Host-only network `192.168.56.0/24` do
    ssh 192.168.56.101 -l ejek
    ```
 This is  how we interact with free5gc VM from now on.
+
+# Step 3 Free5GC installation
+
+## 1 Check Linux Kernel version
+
+In order to use the UPF element, you must use the `5.0.0-23-generic` or `5.4.x` version of the Linux kernel. free5gc uses the [gtp5g kernel module](https://github.com/free5gc/gtp5g), which has been tested and compiled against that kernel versions only.
+
+To determine the version of the Linux kernel you are using:
+
+```bash
+uname -r
+```
+
+![](img/stage-3/26.png)
+
+> Kernel version shown above is ok.
+
+## 2 Install golang
+
+Go is a programming language that was used to develop free5gc. Go was originally written in C language.
+
+- First make sure Golang (go) is not installed:
+
+```bash
+go version
+```
+
+> If go is installed remove it.
+>
+> Assuming it is installed at `/usr/local/go`
+>
+> ```bash
+> sudo rm -rf /usr/local/go
+> ```
+
+- Install go in version `1.14.4`
+
+```bash
+sudo wget https://dl.google.com/go/go1.14.4.linux-amd64.tar.gz
+sudo tar -C /usr/local -zxvf go1.14.4.linux-amd64.tar.gz
+mkdir -p ~/go/{bin,pkg,src}
+# The following assume that your shell is bash
+echo 'export GOPATH=$HOME/go' >> ~/.bashrc
+echo 'export GOROOT=/usr/local/go' >> ~/.bashrc
+echo 'export PATH=$PATH:$GOPATH/bin:$GOROOT/bin' >> ~/.bashrc
+echo 'export GO111MODULE=auto' >> ~/.bashrc
+source ~/.bashrc
+```
+
+> Commands above download a tar package from web, extract it and copy its content to installation folder. Then export some path variables.
+
+- Check if Go is installed (the desired version is `1.14.4`)
+
+```bash
+go version
+```
+
+![](img/stage-3/27.png)
+
+## 3 Install tools
+
+- Install Control-Plane supporting Packages
+  - Which is mongodb database
+
+```bash
+sudo apt -y update
+sudo apt -y install mongodb
+sudo systemctl start mongodb
+```
+
+> We also started mongodb service
+
+You can check if mongodb is installed, by running its shell:
+
+```bash
+mongo
+```
+
+![](img/stage-3/28.png)
+
+> You can exit it by typing `exit` or clicking `ctrl+d`
+
+- Install User-plane Supporting Packages
+  - Which are some development tools for `go`
+
+```bash
+sudo apt -y update
+sudo apt -y install git gcc g++ cmake autoconf libtool pkg-config libmnl-dev libyaml-dev
+go get -u github.com/sirupsen/logrus
+```
+
+## 4 Setup Networking
+
+### 4.1 Enable IP Forwarding
+
+- > The term **IP Forwarding** describes sending a network package from one network interface to another one on the same device. It should be enabled when you want your system to act as a router that transfers IP packets from one network to another.
+
+```bash
+sudo sysctl -w net.ipv4.ip_forward=1
+```
+
+### 4.2 Set data network interface
+
+**Data Network** is a term from 5G. For example it can be Internet. We want to know how to access it from our 5G Core.
+
+```bash
+sudo iptables -t nat -A POSTROUTING -o <dn_interface> -j MASQUERADE
+```
+
+- Here as `<dn_interface>` you should put the interface, which has access to the internet.
+
+  - > - You can check that with running `route -n` command and see which Interface is used to reach `0.0.0.0` destination
+    > ![](img/stage-3/29.png)
+
+  - In my case it is
+
+    ```bash
+    sudo iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE
+    ```
+
+
+
+### 4.3 Stop firewall
+
+> **UFW** (uncomplicated firewall) is a firewall configuration tool that runs on top of iptables , included by default within Ubuntu distributions. It provides **a streamlined interface for configuring common firewall use cases via the command line**.
+
+We need to stop `ufw` service:
+
+```bash
+sudo systemctl stop ufw
+```
+
+### 4.4 Check setup
+
+- After you've stopped the `ufw` wait a few seconds and check if `ufw` status is `inactive`
+
+```bash
+sudo ufw status
+```
+
+- Check `iptables` configuration
+
+```bash
+sudo iptables -t nat -S
+```
+
+![](img/stage-3/30.png)
+
+### 4.5 //TODO
+
+Note that these network settings will disappear after reboot. So make sure you run the above commands after each reboot. (You can search the web and find ways to make the settings persistent).
+
+Make sure you run this commands after each reboot:
+
+```bash
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE
+sudo systemctl stop ufw
+```
+
+## 5 Install Control Plane Elements
+
+### 5.1 Clone the repository
+
+```bash
+cd $HOME
+git clone --recursive -b v3.0.6 -j `nproc` https://github.com/free5gc/free5gc.git
+```
+
+> With this command we will clone the latest stable build (v3.0.6)
+
+- If You want, You can look around the repository with `ls` and `cd` commands.
+
+### 5.2 Compile Network Function Services
+
+Repository has a makefile, which can be used to build all network function services.	
+
+```bash
+cd ~/free5gc
+make
+```
+
+It may take a few minutes.
+
+## 6 Install User Plan Function
+
+As noted before, the GTP kernel module used by the UPF requires that you use Linux kernel version `5.0.0-23-generic` or `5.4.x`. To verify your version:
+
+```bash
+uname -r
+```
+
+### 6.1 Retrieve the 5G GTP-U kernel module and build it
+
+```bash
+git clone -b v0.4.0 https://github.com/free5gc/gtp5g.git
+cd gtp5g
+make
+sudo make install
+```
+
+- To check if gtp5g is installed successfully, see if the following command shows some information:
+
+```bash
+lsmod | grep gtp
+```
+
+![](img/stage-3/31.png)
+
+### 6.2 Build UPF
+
+It was done in step 5.2.
+
+### 6.3 Customize UPF
+
+Customize the UPF as desired. The UPF configuration file is `free5gc/NFs/upf/build/config/upfcfg.yaml`.
+
+As for now we won't change anything there.
+
+## 7 Install web console
+
+### 7.1 Install nodejs and yarn packages
+
+```bash
+sudo apt remove cmdtest
+sudo apt remove yarn
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt-get update
+sudo apt-get install -y nodejs yarn
+```
+
+### 7.2 Build WebConsole
+
+```
+cd ~/free5gc
+make webconsole
+```
+
+### 7.3 Check if WebConsole is installed
+
+- Run WebConsole server
+
+```bash
+cd ~/free5gc/webconsole
+./bin/webconsole
+```
+
+- On your Host-System (in my case Windows 10) open your favorite browser and go to url:
+
+```url
+http://<free5gc_VM_ip_address>:5000/#/
+```
+
+In my case it is:
+
+```url
+http://192.168.56.102:5000/#/
+```
+
+
 
