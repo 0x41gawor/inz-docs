@@ -594,5 +594,47 @@ In my case it is:
 http://192.168.56.102:5000/#/
 ```
 
+- If everything is ok, you should see a login screen
 
+  - <img src="img/stage-3/32.png" style="zoom:75%;" />
+
+  - ```
+    Username: admin
+    Password: free5gc
+    ```
+
+# Step 4 Test installation
+
+free5GC provides some testing procedures to make sure it works properly. First let’s just test the basic registration procedure:
+
+```bash
+cd ~/free5gc
+./test.sh TestRegistration
+```
+
+If everything runs properly without “red” error messages, and the word “PASS” appears near the end of the screen output, then free5GC is running properly.
+
+We can further check other free5GC procedures:
+
+```bash
+./test.sh TestGUTIRegistration
+
+./test.sh TestServiceRequest
+
+./test.sh TestXnHandover
+
+./test.sh TestDeregistration
+
+./test.sh TestPDUSessionReleaseRequest
+
+./test.sh TestPaging
+
+./test.sh TestN2Handover
+
+./test.sh TestNon3GPP
+
+./test.sh TestReSynchronisation
+
+./test_ulcl.sh -om 3 TestRegistration
+```
 
