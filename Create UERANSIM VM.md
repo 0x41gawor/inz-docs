@@ -236,7 +236,6 @@ into
 ```bash
 ...
   ngapIpList:  # the IP list of N2 interfaces on this AMF
-  - 192.168.56.102  # 127.0.0.1
 ...
 ```
 
@@ -250,7 +249,7 @@ Edit `~/free5gc/config/smfcfg.yaml`
 nano config/smfcfg.yaml
 ```
 
-and in the entry inside userplane_information / up_nodes / UPF / interfaces / endpoints, change the IP from `127.0.0.8` to `192.168.56.101`, namely from
+and in the entry inside userplane_information / up_nodes / UPF / interfaces / endpoints, change the IP from `127.0.0.8` to `192.168.56.102`, namely from
 
 ```bash
 ...
@@ -268,7 +267,7 @@ into
   interfaces: # Interface list for this UPF
    - interfaceType: N3 # the type of the interface (N3 or N9)
      endpoints: # the IP address of this N3/N9 interface on this UPF
-       - 192.168.56.101  # 127.0.0.8
+       - 192.168.56.102  # 127.0.0.8
 ```
 
 ![](img/ueransim/7.png)
@@ -284,7 +283,7 @@ nano free5gc/NFs/upf/build/config/upfcfg.yaml
 
 
 
-and change gtpu IP from `127.0.0.8` into `192.168.56.101`, namely from
+and change gtpu IP from `127.0.0.8` into `192.168.56.102`, namely from
 
 ```bash
 ...
@@ -339,11 +338,17 @@ To:
 
 Next we examine the file `~/UERANSIM/config/free5gc-ue.yaml`，and see if the settings is consistent with those in free5GC (via WebConsole), for example:
 
+```bash
+cd $HOME
+nano UERANSIM/config/free5gc-ue.yaml
+```
+
+
+
 ```
 # IMSI number of the UE. IMSI = [MCC|MNC|MSISDN] (In total 15 or 16 digits)
 supi: 'imsi-208930000000003'
 # Mobile Country Code value
-mcc: '208'
 # Mobile Network Code value (2 or 3 digits)
 mnc: '93'
 
@@ -409,6 +414,7 @@ In terminal 1: SSH into ueransim, make sure UERANSIM is built, and configuration
 
 ```bash
 cd ~/UERANSIM
+make #to make sure its build
 build/nr-gnb -c config/free5gc-gnb.yaml
 ```
 
@@ -423,9 +429,16 @@ sudo build/nr-ue -c config/free5gc-ue.yaml
 
 ### 5.2.3 Terminal 3
 
-In terminal 3, SSH into ueransim, and `ping 192.168.56.101` to see free5gc is alive. Then, use `ifconfig` to see if the tunnel `uesimtun0` has been created (by nr-ue):
+In terminal 3, SSH into ueransim, and `ping 192.168.56.102` to see free5gc is alive. Then, use `ifconfig` to see if the tunnel `uesimtun0` has been created (by nr-ue):
 
-## 5.3 Ping
+```bash
+ping 192.168.56.102
+ifconfig
+```
+
+![](img/ueransim/13.png)
+
+## 5.3 Test with ping
 
 Now use `ping`:
 
