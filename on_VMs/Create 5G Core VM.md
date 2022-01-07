@@ -16,7 +16,7 @@ Document follows [this guide](https://www.free5gc.org/installations/stage-3-vm-b
 
 Use this https://ubuntu.com/download/server
 
-![](img/stage-3/1.png)
+![](../img/stage-3/1.png)
 
 ## 3 Create a Ubuntu Server VM
 
@@ -26,35 +26,35 @@ Use this https://ubuntu.com/download/server
 
 Launch VirtualBox and click `new`.
 
-![](img/stage-3/4.png)
+![](../img/stage-3/4.png)
 
 - Name the first VM using a generic name as `ubuntu`, `ubuntu-server`, or `ubuntu-20.04`
 - You can pick 1 or 2 (or more) CPUs, and about 2048M memory, although you can change them later
 
-![](img/stage-3/2.png)
+![](../img/stage-3/2.png)
 
 - Create a virtual hard disk VDI with about 10GB memory size.
 
-![](img/stage-3/3.png)
+![](../img/stage-3/3.png)
 
 ### 3.2 Setup VM
 
 - You can increase the CPU number from default 1 to 2.
 
-![](img/stage-3/5.png)
+![](../img/stage-3/5.png)
 
 - Also we need to plug in our "CD" with ubuntu (the .iso file)
 - To do so move to "Storage" and clikc "+" under Controller: IDE option as shown below
 
-![](img/stage-3/6.png)
+![](../img/stage-3/6.png)
 
 - And add your .iso file and the choose it
 
-![](img/stage-3/7.png)
+![](../img/stage-3/7.png)
 
 - Move to the "Network" and enable second adapter. Make it Host-only, rest of config leave default.
 
-![](img/stage-3/8.png)
+![](../img/stage-3/8.png)
 
 ### 3.3 Start the VM
 
@@ -68,15 +68,15 @@ Installation is a long process I will list only the key-points. Unsaid things le
 - Uncheck "the LVM option"
   - not choosing LVM will make it a little bit easier later if you want to extend your disk space
 
-![](img/stage-3/10.png)
+![](../img/stage-3/10.png)
 
 - it is recommended that you choose short username and password for ease of typing later
 
-![](img/stage-3/11.png)
+![](../img/stage-3/11.png)
 
 - Install SSH server
 
-![](img/stage-3/12.png)
+![](../img/stage-3/12.png)
 
 - Later follow the displayed instructions and leave default values.
 - Reboot at the end.
@@ -91,7 +91,7 @@ After you've logged in type in some commands:
 - `ifconfig`
   - It may require installation of `net-tools`
 
-![](img/stage-3/13.png)
+![](../img/stage-3/13.png)
 
 Of course addresses on your machine may differ.
 
@@ -105,7 +105,7 @@ On your host system (in my case - Windows) launch MobaXterm, which is my favouri
 
 - Open new terminal tab
 
-![](img/stage-3/14.png)
+![](../img/stage-3/14.png)
 
 - Paste this command into the terminal
 
@@ -126,7 +126,7 @@ Check if you can perfom following actions:
 - `ping google.com`
 - `ifconfig`
 
-![](img/stage-3/15.png)
+![](../img/stage-3/15.png)
 
 From now on the communication with ubuntu-server can be done by SSH connection. 
 
@@ -143,13 +143,13 @@ sudo apt upgrade
 
 - In SSH Client you can type `exit`to close the connection.
 
-![](img/stage-3/16.png)
+![](../img/stage-3/16.png)
 
 - You can close the SSH Client now.
 
 - On the Ubuntu-server VM just click the "X" to close the window. When the dialog pops-up select "Send the shutdown signal"
 
-![](img/stage-3/17.png)
+![](../img/stage-3/17.png)
 
 You can close the Virtual Box window.
 
@@ -183,11 +183,11 @@ VM is ready to clone!
 
 - From the virtual box select ubuntu-server VM, and from "snapshots" options select "clone".
 
-![](img/stage-3/18.png)
+![](../img/stage-3/18.png)
 
 - Name it "free5gc" and select correct MAC Address Policy
 
-  ![](img/stage-3/19.png)
+  ![](../img/stage-3/19.png)
 
 - In the next window its your choice, both (linked and full) options will do.
 
@@ -221,7 +221,7 @@ sudo nano /etc/hosts
 
 Content of `/etc/hosts/` should look like this:
 
-![](img/stage-3/20.png)
+![](../img/stage-3/20.png)
 
 The changes will take effect after next reboot.
 
@@ -250,7 +250,7 @@ cat 00-installer-config.yaml
 
 > **Hint**: You can use tab to autocomplete such long names as this one.
 
-![](img/stage-3/21.png)
+![](../img/stage-3/21.png)
 
 It means the VM has two interfaces:
 
@@ -282,7 +282,7 @@ network:
 
 Verify:
 
-![](img/stage-3/22.png)
+![](../img/stage-3/22.png)
 
 Now check if the new configuration is correct syntax:
 
@@ -292,7 +292,7 @@ sudo netplan try
 
 
 
-![](img/stage-3/23.png)
+![](../img/stage-3/23.png)
 
 Press Enter to exit and then apply the new interface settings
 
@@ -308,11 +308,11 @@ We can also check the routing table, just to have a grasp of what is going on re
 route -n
 ```
 
-![](img/stage-3/24.png)
+![](../img/stage-3/24.png)
 
 As we remember the VM has to adapters which we can check in VirtualBox under VM network settings.
 
-![](img/stage-3/25.png)
+![](../img/stage-3/25.png)
 
 - Now the NAT network adapter enp0s3 has IP `10.0.2.2` and it belongs to NAT network `10.0.2.0/24`.
 
@@ -347,7 +347,7 @@ To determine the version of the Linux kernel you are using:
 uname -r
 ```
 
-![](img/stage-3/26.png)
+![](../img/stage-3/26.png)
 
 > Kernel version shown above is ok.
 
@@ -391,7 +391,7 @@ source ~/.bashrc
 go version
 ```
 
-![](img/stage-3/27.png)
+![](../img/stage-3/27.png)
 
 ## 3 Install tools
 
@@ -412,7 +412,7 @@ You can check if mongodb is installed, by running its shell:
 mongo
 ```
 
-![](img/stage-3/28.png)
+![](../img/stage-3/28.png)
 
 > You can exit it by typing `exit` or clicking `ctrl+d`
 
@@ -446,7 +446,7 @@ sudo iptables -t nat -A POSTROUTING -o <dn_interface> -j MASQUERADE
 - Here as `<dn_interface>` you should put the interface, which has access to the internet.
 
   - > - You can check that with running `route -n` command and see which Interface is used to reach `0.0.0.0` destination
-    > ![](img/stage-3/29.png)
+    > ![](../img/stage-3/29.png)
 
   - In my case it is
 
@@ -480,7 +480,7 @@ sudo ufw status
 sudo iptables -t nat -S
 ```
 
-![](img/stage-3/30.png)
+![](../img/stage-3/30.png)
 
 ### 4.5 //TODO
 
@@ -541,7 +541,7 @@ sudo make install
 lsmod | grep gtp
 ```
 
-![](img/stage-3/31.png)
+![](../img/stage-3/31.png)
 
 ### 6.2 Build UPF
 

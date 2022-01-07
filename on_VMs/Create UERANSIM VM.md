@@ -10,7 +10,7 @@ Activities in this step are similar to the ones done in [Create 5G Core VM](#Cre
 
 <img src="img/ueransim/1.png" style="zoom:75%;" />
 
-![](img/ueransim/2.png)
+![](../img/ueransim/2.png)
 
 - In the next step both "full clone" or "linked clone" option will work.
 
@@ -100,7 +100,7 @@ Check the file content
 cat /etc/hosts
 ```
 
-It should look like this ![](img/ueransim/3.png)
+It should look like this ![](../img/ueransim/3.png)
 
 ## 1.5 Reboot the machine
 
@@ -114,7 +114,7 @@ Log in to the machines and run `ifconfig` on both of them, to check IP addresses
 
 In my case it is:
 
-![](img/ueransim/4.png)
+![](../img/ueransim/4.png)
 
 ## 1.6 Ping VMs
 
@@ -201,7 +201,7 @@ http://192.168.56.102:5000/#/
   - Note that other than the “Operator Code Type” field which you should choose “OP” for now, leave other fields unchanged. This registration data is used for ease of testing and actual use later.
 - After the data is created successfully, you can press Ctrl-C on the terminal to quit WebConsole
 
-![](img/ueransim/5.png)
+![](../img/ueransim/5.png)
 
 - After you submitted you can stop the server using `ctrl+c` and `clear` command to clear the screen.
 
@@ -239,7 +239,7 @@ into
 ...
 ```
 
-![](img/ueransim/6.png)
+![](../img/ueransim/6.png)
 
 ## 4.2 SMF
 
@@ -270,7 +270,7 @@ into
        - 192.168.56.102  # 127.0.0.8
 ```
 
-![](img/ueransim/7.png)
+![](../img/ueransim/7.png)
 
 ## 4.3 UPF
 
@@ -299,7 +299,7 @@ into
   - addr: 192.168.56.101  # 127.0.0.8
 ```
 
-![](img/ueransim/8.png)
+![](../img/ueransim/8.png)
 
 # Step 4 -  Setting UERANSIM
 
@@ -328,11 +328,11 @@ Change:
 
 From:
 
-![](img/ueransim/9.png)
+![](../img/ueransim/9.png)
 
 To:
 
-![](img/ueransim/10.png)
+![](../img/ueransim/10.png)
 
 ## 4.2 Examine UE file
 
@@ -436,7 +436,7 @@ ping 192.168.56.102
 ifconfig
 ```
 
-![](img/ueransim/13.png)
+![](../img/ueransim/13.png)
 
 ## 5.3 Test with ping
 
@@ -456,5 +456,5 @@ If `ping` gets replies, then free5GC is running properly. Congratulations!
 
 What have we build is something like this:
 
-![](img/ueransim/12.png)
+![](../img/ueransim/12.png)
 

@@ -1,10 +1,6 @@
-# inz-docs
+# Free5GC on Virtual Machines
 
-At first 5G Core VM was created. In this step we created a Ubuntu-Server VM, which can used as a skeleton for other VMs.
-
-Second step is to create UERANSIM VM.
-
-
+[free5gc](https://www.free5gc.org)
 
 ## Launch it
 
@@ -12,7 +8,7 @@ Second step is to create UERANSIM VM.
 
 - Connect to them via SSH ( e.g. MobaXterm)
 
-- (Optional) Ping them from each other
+- (Optional) Ping them from each other, to test communication.
 
 - Copy and paste it into `free5gc` line by line...
 
@@ -26,5 +22,13 @@ Second step is to create UERANSIM VM.
 
   - in 5G terms enable Core to forward UERAN flows to the Data Network (Internet in our case)
 
-- Next steps are described in [here](Create UERANSIM VM.md) under **"Step 5 Testing UERANSIM against free5gc"**
+- Next steps are described in [here](on_VMs/Create UERANSIM VM.md) under **"Step 5 Testing UERANSIM against free5gc"**
+
+# Free5GC on Kubernetes Clusters
+
+[towards5gs-helm](https://github.com/Orange-OpenSource/towards5gs-helm)
+
+## Introduction to clusters
+
+[Introduction to clusters](on_Clusters/Clusters_intro.md)
 
