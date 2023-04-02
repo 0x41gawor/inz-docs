@@ -219,7 +219,7 @@ def _handle_PacketIn(event):
  
      if a and a.protodst=="10.0.0.6":
        msg = of.ofp_packet_out(data=event.ofp)
-       msg.actions.append(of.ofp_action_output(port=4))
+       msg.actions.append(of.ofp_action_output(port=6))
        event.connection.send(msg)
  
      if a and a.protodst=="10.0.0.1":
@@ -288,7 +288,7 @@ def _handle_PacketIn(event):
      msg.hard_timeout = 0
      msg.match.dl_type = 0x0800
      msg.match.nw_dst = "10.0.0.6"
-     msg.actions.append(of.ofp_action_output(port = 4))
+     msg.actions.append(of.ofp_action_output(port = 6))
      event.connection.send(msg)
  
   elif event.connection.dpid==s2_dpid: #rule dla tego switcha sa izi, coś wchodzi portem 1 to ma wyjść portem 2 i vice versa
