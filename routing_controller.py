@@ -219,7 +219,7 @@ def _handle_PacketIn(event):
  
      if a and a.protodst=="10.0.0.6":
        msg = of.ofp_packet_out(data=event.ofp)
-       msg.actions.append(of.ofp_action_output(port=6))
+       msg.actions.append(of.ofp_action_output(port=4))
        event.connection.send(msg)
  
      if a and a.protodst=="10.0.0.1":
