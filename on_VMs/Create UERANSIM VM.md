@@ -8,7 +8,7 @@ UE/RAN Simulator is a simulator of User Equipment/Radio Access Network.
 
 Activities in this step are similar to the ones done in [Create 5G Core VM](#Create 5G Core VM).
 
-<img src="img/ueransim/1.png" style="zoom:75%;" />
+<img src="../img/ueransim/1.png" style="zoom:75%;" />
 
 ![](../img/ueransim/2.png)
 
@@ -310,7 +310,7 @@ In the ueransim VM, there are two files related to free5GC：
 
 The second file is for UE, which we don’t have to change if the data inside is consistent with the (default) registration data we set using WebConsole previously.
 
-## 4.1
+## 4.1 Network setup
 
 First SSH into ueransim, and edit the file `~/UERANSIM/config/free5gc-gnb.yaml`
 

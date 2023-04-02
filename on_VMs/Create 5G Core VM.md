@@ -1,13 +1,3 @@
-Document follows [this guide](https://www.free5gc.org/installations/stage-3-vm-basics/) with every step listed below included.
-
-- [Creating a Ubuntu VM using VirtualBox](https://www.free5gc.org/installations/stage-3-vm-basics/)
-- [Creating and Configuring a free5GC VM](https://www.free5gc.org/installations/stage-3-free5gc-vm/)
-- [Installing and Testing free5GC Core Network](https://www.free5gc.org/installations/stage-3-free5gc-install/)
-- [Installing a UE/RAN Simulator](https://www.free5gc.org/installations/stage-3-sim-install/)
-- [free5GC Simple Apps](https://www.free5gc.org/installations/stage-3-free5gc-app/)
-- [free5GC Demo Videos](https://www.free5gc.org/stage-3-videos/video-index/)
-- [Environment setup of multiple SMF, DNN, and UPF (including ULCL)](https://www.youtube.com/watch?v=AEMrjKRWarw)
-
 # Step 1 - Create Ubuntu Server VM
 
 ## 1 Install Virtual Box
@@ -44,7 +34,7 @@ Launch VirtualBox and click `new`.
 ![](../img/stage-3/5.png)
 
 - Also we need to plug in our "CD" with ubuntu (the .iso file)
-- To do so move to "Storage" and clikc "+" under Controller: IDE option as shown below
+- To do so move to "Storage" and click "+" under Controller: IDE option as shown below
 
 ![](../img/stage-3/6.png)
 
@@ -63,7 +53,7 @@ Installation is a long process I will list only the key-points. Unsaid things le
 - Choose "Ubuntu Server" option from GRUB menu
 - Choose "Ubntu Server" as the base for installation not "Ubuntu server (minimized)"
 - Leave Network Connections default
-  - <img src="img/stage-3/9.png" style="zoom:50%;" />
+  - <img src="../img/stage-3/9.png" style="zoom:50%;" />
 
 - Uncheck "the LVM option"
   - not choosing LVM will make it a little bit easier later if you want to extend your disk space
@@ -81,7 +71,7 @@ Installation is a long process I will list only the key-points. Unsaid things le
 - Later follow the displayed instructions and leave default values.
 - Reboot at the end.
 - Here you have nothing to worry about. Just press enter
-- <img src="img/stage-3/12-1.png" style="zoom:75%;" />
+- <img src="../img/stage-3/12-1.png" style="zoom:75%;" />
 
 ### 3.4 Test your ubuntu-server installation
 
@@ -596,7 +586,7 @@ http://192.168.56.102:5000/#/
 
 - If everything is ok, you should see a login screen
 
-  - <img src="img/stage-3/32.png" style="zoom:75%;" />
+  - <img src="../img/stage-3/32.png" style="zoom:75%;" />
 
   - ```
     Username: admin
@@ -619,9 +609,9 @@ We can further check other free5GC procedures:
 ```bash
 ./test.sh TestGUTIRegistration
 
-./test.sh TestServiceRequest
+./test.sh TestServiceRequest 
 
-./test.sh TestXnHandover
+./test.sh TestXnHandover  
 
 ./test.sh TestDeregistration
 
